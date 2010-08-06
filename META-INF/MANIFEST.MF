@@ -22,6 +22,8 @@ Export-Package: de.schaeffer.compiere.tools,
  org.compiere.minigrid,
  org.compiere.pos,
  org.compiere.print,
- org.eevolution.form
+ org.eevolution.form,
+ org.opensixen.osgi,
+ org.opensixen.osgi.interfaces
 Require-Bundle: org.opensixen.libs;bundle-version="1.0.0",
  org.opensixen.base;bundle-version="1.0.0"

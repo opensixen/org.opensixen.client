@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -102,6 +103,8 @@ import org.compiere.util.Env;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IMenuAction;
 
 /**
  *	Main Panel of application window.
@@ -525,6 +528,12 @@ public final class APanel extends CPanel
 			toolBar.add(aEnd.getButton());
 		}
 
+		// Create OSGi menu actions..
+		List<IMenuAction> osgiActions = Service.list(IMenuAction.class);
+		for (IMenuAction action:osgiActions)	{
+			action.addAction(menuBar);
+		}
+		
 		//
 		if (CLogMgt.isLevelAll())
 			Util.printActionInputMap(this);
