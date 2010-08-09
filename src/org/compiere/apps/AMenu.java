@@ -77,6 +77,7 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Splash;
 import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IMenuAction;
 import org.opensixen.osgi.interfaces.IMenuInfoComponent;
 /**
  *	Application Menu Controller
@@ -516,6 +517,11 @@ public final class AMenu extends CFrame
 		AEnv.addMenuItem("Online", null, null, mHelp, this);
 		AEnv.addMenuItem("EMailSupport", null, null, mHelp, this);
 		AEnv.addMenuItem("About", null, null, mHelp, this);
+		// Create OSGi menu actions..
+		List<IMenuAction> osgiActions = Service.list(IMenuAction.class);
+		for (IMenuAction menuAction:osgiActions)	{
+			menuAction.addAction(menuBar);
+		}
 	}   //  createMenu
 
 	/**
