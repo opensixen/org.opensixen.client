@@ -36,6 +36,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
+
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -74,6 +76,8 @@ import org.compiere.util.Ini;
 import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Splash;
+import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IMenuInfoComponent;
 /**
  *	Application Menu Controller
  *
@@ -222,6 +226,8 @@ public final class AMenu extends CFrame
 	private Thread infoUpdaterThread = null;
 	
 	private WindowManager windowManager = new WindowManager();
+	
+	private List<IMenuInfoComponent> menuInfoComponents;
 	
 	
 	/**************************************************************************
@@ -380,6 +386,11 @@ public final class AMenu extends CFrame
 		//
 		infoPanel.add(bNotes, null);
 		infoPanel.add(bRequests, null);
+		// OSGi MenuInfoComponents before memoryBar
+		menuInfoComponents = Service.list(IMenuInfoComponent.class);
+		for (IMenuInfoComponent component:menuInfoComponents)	{
+			infoPanel.add(component.getComponent(), null);
+		}
 		infoPanel.add(memoryBar, null);
 		//
 		int loc = Ini.getDividerLocation();
@@ -719,6 +730,11 @@ public final class AMenu extends CFrame
 				);
 			*/
 			MSystem.get(m_ctx).info();
+		}
+
+		// Update OSGi components
+		for (IMenuInfoComponent component:menuInfoComponents)	{
+			component.updateInfo();
 		}
 	}	//	updateInfo
 
