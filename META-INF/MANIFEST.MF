@@ -18,7 +18,6 @@ Export-Package: de.schaeffer.compiere.tools,
  org.compiere.pos,
  org.compiere.print,
  org.eevolution.form,
- org.opensixen.interfaces,
  org.opensixen.osgi,
  org.opensixen.osgi.interfaces,
  org.opensixen.swing
