@@ -3,5 +3,6 @@
 <plugin>
    <extension-point id="org.opensixen.osgi.interfaces.IMenuAction" name="IMenuAction" schema="schema/org.opensixen.osgi.interfaces.IMenuAction.exsd"/>
    <extension-point id="org.opensixen.osgi.interfaces.IMenuInfoComponent" name="IMenuInfoComponent" schema="schema/org.opensixen.osgi.interfaces.IMenuInfoComponent.exsd"/>
+   <extension-point id="org.opensixen.osgi.interfaces.IHelperContentProvider" name="IHelperContentProvider" schema="schema/org.opensixen.osgi.interfaces.IHelperContentProvider.exsd"/>
 
 </plugin>

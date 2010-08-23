@@ -143,7 +143,7 @@ import org.opensixen.osgi.interfaces.IMenuAction;
  *  @see FR [2887701] https://sourceforge.net/tracker/?func=detail&atid=879335&aid=2887701&group_id=176962
  *  @sponsor www.metas.de
  */
-public final class APanel extends CPanel
+public class APanel extends CPanel
 	implements DataStatusListener, ChangeListener, ActionListener, ASyncProcess
 {
 	/**
@@ -605,7 +605,7 @@ public final class APanel extends CPanel
 	/** Current MTab                                    */
 	private GridTab			m_curTab;
 	/** Current GridController                          */
-	private GridController  m_curGC;
+	protected GridController  m_curGC;
 	/** Current Window Panel                            */
 	private JTabbedPane     m_curWinTab = null;
 	/** Current Window No                               */

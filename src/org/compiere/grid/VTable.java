@@ -42,7 +42,7 @@ import org.jdesktop.swingx.action.BoundAction;
  * 
  * @author 	Teo Sarca, SC ARHIPAC SERVICE SRL - FR [ 1753943 ]
  */
-public final class VTable extends CTable 
+public class VTable extends CTable 
 	implements PropertyChangeListener
 {
 	/**

@@ -21,10 +21,14 @@ import java.awt.GraphicsConfiguration;
 import java.awt.Image;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JSplitPane;
+
 import org.compiere.model.MQuery;
 import org.compiere.swing.CFrame;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
+import org.opensixen.swing.AHelperPanel;
+import org.opensixen.swing.EPanel;
 
 /**
  *  Main Application Window.
@@ -61,15 +65,19 @@ public class AWindow extends CFrame
 	{
 		super(gc);
 		//	Set UI Components
-		this.setIconImage(Env.getImage("mWindow.gif"));
-		this.getContentPane().add(m_APanel, BorderLayout.CENTER);
+		this.setIconImage(Env.getImage("mWindow.gif"));		
+		//this.getContentPane().add(m_APanel, BorderLayout.CENTER);
+		m_HPanel = new AHelperPanel(Env.getCtx(), this, m_APanel);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_HPanel,m_APanel);
+		this.getContentPane().add(splitPane, BorderLayout.CENTER);
 		this.setGlassPane(m_glassPane);
 	}	//	AWindow
 
 	/** The GlassPane           */
 	private AGlassPane  	m_glassPane = new AGlassPane();
 	/** Application Window  	*/
-	private APanel			m_APanel = new APanel(this);
+	private EPanel			m_APanel = new EPanel(this);
+	private AHelperPanel	m_HPanel;
 	
 	/**	Logger					*/
 	private static CLogger 	log = CLogger.getCLogger(AWindow.class);
@@ -100,6 +108,7 @@ public class AWindow extends CFrame
 		setAD_Window_ID(AD_Window_ID);
 		//
 		boolean loadedOK = m_APanel.initPanel (0, AD_Window_ID, query);
+		m_HPanel.initPanel(AD_Window_ID, query);
 		if (loadedOK)
 		{
 			commonInit();
