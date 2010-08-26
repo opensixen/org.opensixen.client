@@ -67,7 +67,7 @@ public class AWindow extends CFrame
 		//	Set UI Components
 		this.setIconImage(Env.getImage("mWindow.gif"));		
 		//this.getContentPane().add(m_APanel, BorderLayout.CENTER);
-		m_HPanel = new AHelperPanel(Env.getCtx(), this, m_APanel);
+		m_HPanel = new AHelperPanel(Env.getCtx(), m_APanel);
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, m_HPanel,m_APanel);
 		this.getContentPane().add(splitPane, BorderLayout.CENTER);
 		this.setGlassPane(m_glassPane);
@@ -108,6 +108,7 @@ public class AWindow extends CFrame
 		setAD_Window_ID(AD_Window_ID);
 		//
 		boolean loadedOK = m_APanel.initPanel (0, AD_Window_ID, query);
+		// Load the HelperPanel
 		m_HPanel.initPanel(AD_Window_ID, query);
 		if (loadedOK)
 		{

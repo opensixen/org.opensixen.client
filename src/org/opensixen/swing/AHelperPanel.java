@@ -6,6 +6,7 @@ package org.opensixen.swing;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Properties;
@@ -28,10 +29,9 @@ import org.opensixen.osgi.interfaces.IHelperContentProvider;
  */
 public class AHelperPanel extends CPanel {
 
-	private AWindow window;
 	private EPanel aPanel;
 	
-	protected int p_width = 400;
+	protected int p_width = 300;
 	protected int p_height;
 	private List<IHelperContentProvider> providers;
 	private Properties ctx;
@@ -41,10 +41,9 @@ public class AHelperPanel extends CPanel {
 	 * @param aWindow
 	 * @param m_APanel
 	 */
-	public AHelperPanel(Properties ctx, AWindow aWindow, EPanel m_APanel) {
+	public AHelperPanel(Properties ctx, EPanel m_APanel) {
 		super();
 		this.ctx = ctx;
-		this.window = aWindow;
 		this.aPanel = m_APanel;
 	}
 
@@ -59,6 +58,7 @@ public class AHelperPanel extends CPanel {
 		
 		// Si no hay providers, salimos
 		if (providers == null)	{
+			getParent().setVisible(false);
 			return true;
 		}
 		
@@ -66,14 +66,14 @@ public class AHelperPanel extends CPanel {
 		JTabbedPane tabbedPane = new JTabbedPane();
 
 		p_height = aPanel.getHeight();
-		tabbedPane.setSize(p_width, p_height);
+		setSize(p_width, p_height);
+		setMinimumSize(new Dimension(p_width, 300));
 		
 		for (IHelperContentProvider provider:providers)	{
 			// Añadimos al panel principal el nuevo provider como listener
 			aPanel.addListener(provider);
 			
 			CPanel tab = new CPanel();
-		    tab.setPreferredSize( getSize() );
 		    tab.setLayout( new BorderLayout() );
 			provider.initContent(ctx, tab, aPanel);
 			tabbedPane.addTab("Informacion", tab);
