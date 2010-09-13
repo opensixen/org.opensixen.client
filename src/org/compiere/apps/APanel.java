@@ -104,7 +104,9 @@ import org.compiere.util.Language;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IAccountViewer;
 import org.opensixen.osgi.interfaces.IMenuAction;
+import org.opensixen.osgi.interfaces.IService;
 
 /**
  *	Main Panel of application window.
@@ -2595,8 +2597,13 @@ public class APanel extends CPanel
 			Object ps = m_curTab.getValue("Posted");
 			if (ps != null && ps.equals("Y"))
 			{
-				new org.compiere.acct.AcctViewer (Env.getContextAsInt (m_ctx, m_curWindowNo, "AD_Client_ID"),
-					tableId, recordId);
+				IAccountViewer viewer = Service.locate(IAccountViewer.class);
+				if (viewer != null)	{	
+					viewer.view(Env.getContextAsInt (m_ctx, m_curWindowNo, "AD_Client_ID"),tableId, recordId);
+				} else {
+					new org.compiere.acct.AcctViewer (Env.getContextAsInt (m_ctx, m_curWindowNo, "AD_Client_ID"),tableId, recordId);
+				}
+			
 			}
 			else
 			{

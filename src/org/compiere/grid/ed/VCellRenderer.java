@@ -44,7 +44,7 @@ import org.compiere.util.DisplayType;
  * 		<li>FR [ 2866571 ] VCellRenderer: implement getters
  * 			https://sourceforge.net/tracker/?func=detail&aid=2866571&group_id=176962&atid=879335
  */
-public final class VCellRenderer extends DefaultTableCellRenderer
+public class VCellRenderer extends DefaultTableCellRenderer
 {
 	/**
 	 * 
