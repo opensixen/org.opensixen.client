@@ -70,7 +70,7 @@ public class EPanel extends APanel{
 		fireActionPerformed(e);
 	}
 	
-	private void fireActionPerformed(ActionEvent e)	{
+	public void fireActionPerformed(ActionEvent e)	{
 		for (IPanelListener listener:listeners)	{
 			listener.actionPerformed(e);
 		}

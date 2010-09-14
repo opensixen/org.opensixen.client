@@ -7,6 +7,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import java.util.Properties;
@@ -19,6 +20,7 @@ import org.compiere.model.MQuery;
 import org.compiere.model.MWindow;
 import org.compiere.swing.CPanel;
 import org.compiere.util.Env;
+import org.opensixen.osgi.OsxPO;
 import org.opensixen.osgi.Service;
 import org.opensixen.osgi.ServiceQuery;
 import org.opensixen.osgi.interfaces.IHelperContentProvider;
@@ -31,7 +33,9 @@ public class AHelperPanel extends CPanel {
 
 	private EPanel aPanel;
 	
-	protected int p_width = 300;
+	public static final int DEFAULT_WITH=300;
+	
+	protected int p_width = DEFAULT_WITH;
 	protected int p_height;
 	private List<IHelperContentProvider> providers;
 	private Properties ctx;
@@ -57,29 +61,48 @@ public class AHelperPanel extends CPanel {
 		providers = Service.list(IHelperContentProvider.class, sq);
 		
 		// Si no hay providers, salimos
-		if (providers == null)	{
-			getParent().setVisible(false);
+		if (providers == null || providers.size() == 0)	{
+			setVisible(false);
 			return true;
 		}
 		
-		setLayout( new BorderLayout() );
-		JTabbedPane tabbedPane = new JTabbedPane();
+		
 
 		p_height = aPanel.getHeight();
 		setSize(p_width, p_height);
-		setMinimumSize(new Dimension(p_width, 300));
+		setMinimumSize(new Dimension(p_width, DEFAULT_WITH));
+		
+		// Create 3 containers, for TOP, CENTER, and BOTTOM
+		setLayout(new GridLayout(3, 1));
+		JTabbedPane topPanel = new JTabbedPane();		
+		JTabbedPane centerPanel = new JTabbedPane();		
+		CPanel bottomPanel = new CPanel();
+		
+		add(topPanel);
+		add(centerPanel);
+		add(bottomPanel);
+				
 		
 		for (IHelperContentProvider provider:providers)	{
 			// Añadimos al panel principal el nuevo provider como listener
-			aPanel.addListener(provider);
-			
-			CPanel tab = new CPanel();
-		    tab.setLayout( new BorderLayout() );
-			provider.initContent(ctx, tab, aPanel);
-			tabbedPane.addTab("Informacion", tab);
+			aPanel.addListener(provider);						
+		    
+			HelperContentPanel[] panels = provider.getPanels(ctx, aPanel);			
+			if (panels != null)	{
+				for (HelperContentPanel panel:panels)	{
+					switch (panel.getPosition()) {
+					case HelperContentPanel.POSITION_TOP:
+						topPanel.addTab(panel.getTabName(), panel);
+						break;
+					case HelperContentPanel.POSITION_CENTER:
+						centerPanel.addTab(panel.getTabName(), panel);
+						break;
+					}					
+				}
+			}
 
 		}
-		this.add( tabbedPane , BorderLayout.CENTER );
+		
 		return true;
 	}
 
