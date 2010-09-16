@@ -919,7 +919,7 @@ public final class ALogin extends CDialog
 		this.setLocale(loc);
 		res = ResourceBundle.getBundle(RESOURCE, loc);
 		//
-		this.setTitle(res.getString("Login"));
+		this.setTitle(Adempiere.TITLE);//this.setTitle(res.getString("Login"));
 		hostLabel.setText(res.getString("Host"));
 		userLabel.setText(res.getString("User"));
 		userLabel.setToolTipText(res.getString("EnterUser"));
@@ -960,7 +960,7 @@ public final class ALogin extends CDialog
 		}
 		else
 		{
-			this.setTitle(res.getString("Login"));
+			this.setTitle(Adempiere.TITLE);//this.setTitle(res.getString("Login"));
 			statusBar.setStatusLine(txt_NotConnected, true);
 		}
 	}   //	languageCombo_actionPerformed
