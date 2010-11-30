@@ -11,7 +11,8 @@ import org.compiere.plaf.CompiereColor;
 import org.compiere.swing.CPanel;
 
 /**
- * 
+ * Extends CPanel and add some information
+ * about position, tabName...
  * 
  * @author Eloy Gomez
  * Indeos Consultoria http://www.indeos.es
@@ -22,6 +23,8 @@ public class HelperContentPanel extends CPanel {
 	public static final int POSITION_TOP = 1;
 	
 	public static final int POSITION_CENTER = 2;
+	
+	public static final int POSITION_BOTTOM = 3;
 	
 	private boolean priority = false;
 	

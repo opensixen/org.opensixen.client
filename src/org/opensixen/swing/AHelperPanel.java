@@ -76,7 +76,7 @@ public class AHelperPanel extends CPanel {
 		setLayout(new GridLayout(3, 1));
 		JTabbedPane topPanel = new JTabbedPane();		
 		JTabbedPane centerPanel = new JTabbedPane();		
-		CPanel bottomPanel = new CPanel();
+		JTabbedPane bottomPanel = new JTabbedPane();
 		
 		add(topPanel);
 		add(centerPanel);
@@ -96,8 +96,11 @@ public class AHelperPanel extends CPanel {
 						break;
 					case HelperContentPanel.POSITION_CENTER:
 						centerPanel.addTab(panel.getTabName(), panel);
+						break;					
+					case HelperContentPanel.POSITION_BOTTOM:
+						bottomPanel.addTab(panel.getTabName(), panel);
 						break;
-					}					
+					}
 				}
 			}
 

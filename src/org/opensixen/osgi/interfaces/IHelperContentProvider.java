@@ -20,6 +20,11 @@ public interface IHelperContentProvider extends IService, IPanelListener {
 
 	//public void initContent(Properties ctx, CPanel parent, EPanel panel );
 	
+	/**
+	 * Get HelperContentPanels
+	 * @param ctx Properties
+	 * @param panel Main GridPanel
+	 */
 	public HelperContentPanel[] getPanels(Properties ctx, EPanel panel);
 	
 }
