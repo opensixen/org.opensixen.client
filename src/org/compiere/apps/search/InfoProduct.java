@@ -517,7 +517,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			SQL += " AND EXISTS (SELECT * FROM M_PriceList xp WHERE xp.M_PriceList_ID=" + M_PriceList_ID
 				+ " AND pl.C_Currency_ID=xp.C_Currency_ID)";
 		//	Add Access & Order
-		SQL = MRole.getDefault().addAccessSQL (SQL, "M_PriceList_Version", true, false)	// fully qualidfied - RO 
+		SQL = MRole.getDefault().addAccessSQL (SQL, "M_PriceList_Version", true, false)	// fully qualified - RO 
 			+ " ORDER BY M_PriceList_Version.Name";
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -1096,7 +1096,11 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 				
 				if(tab.getSelectedIndex() == 4 & warehouseTbl.getRowCount() > 0)
 				{	
-					String value = (String)warehouseTbl.getValueAt(warehouseTbl.getSelectedRow(),0);
+					// If no warehouse row is selected in the warehouse tab, use the first warehouse
+					// row to prevent array index out of bounds. BF 3051361
+					int selectedRow = warehouseTbl.getSelectedRow();
+					if (selectedRow<0) selectedRow = 0;
+					String value = (String)warehouseTbl.getValueAt(selectedRow,0);		 
 					int M_Warehouse_ID = DB.getSQLValue(null, "SELECT M_Warehouse_ID FROM M_Warehouse WHERE UPPER(Name) = UPPER(?) AND AD_Client_ID=?", new Object[] { value ,Env.getAD_Client_ID(Env.getCtx())});
 					initAtpTab(M_Warehouse_ID);
 				}	
@@ -1186,7 +1190,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 		}
 
 		//	Orders
-		sql = "SELECT o.DatePromised, ol.QtyReserved,"
+		sql = "SELECT ol.DatePromised, ol.QtyReserved,"
 			+ " productAttribute(ol.M_AttributeSetInstance_ID), ol.M_AttributeSetInstance_ID,"
 			+ " dt.DocBaseType, bp.Name,"
 			+ " dt.PrintName || ' ' || o.DocumentNo As DocumentNo, w.Name "
