@@ -46,6 +46,7 @@ import org.compiere.util.CLogger;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trace;
+import org.opensixen.osgi.BundleProxyClassLoader;
 
 
 /**
@@ -315,7 +316,8 @@ public class FormFrame extends CFrame
 		try
 		{
 			//	Create instance w/o parameters
-			m_panel = (FormPanel)Class.forName(className).newInstance();
+			//m_panel = (FormPanel)Class.forName(className).newInstance();
+			m_panel = (FormPanel) BundleProxyClassLoader.getClass(className).newInstance(); 
 		}
 		catch (Exception e)
 		{
