@@ -188,7 +188,7 @@ public class PAttributeInstance extends CDialog
 		+ " LEFT OUTER JOIN M_Product pr ON (asi.M_AttributeSet_ID = pr.M_AttributeSet_ID)"
 	;
 	/** Where Clause						*/ 
-	private static String s_sqlWhereWithoutWarehouse = " (pr.M_Product_ID=? OR p.M_Product_ID=?)";
+	private static String s_sqlWhereWithoutWarehouse = " (pr.M_Product_ID=? AND p.M_Product_ID=?)";	// egomez: Cambiamos clausula OR por AND porque salian registros duplicados y no le encontre sentido
 	private static String s_sqlWhereSameWarehouse = " AND (l.M_Warehouse_ID=? OR 0=?)";
 
 	private String	m_sqlNonZero = " AND (s.QtyOnHand<>0 OR s.QtyReserved<>0 OR s.QtyOrdered<>0)";
