@@ -47,6 +47,7 @@ import org.compiere.swing.CMenuItem;
 import org.compiere.util.CLogger;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
+import org.opensixen.osgi.interfaces.IVPAttributeDialog;
 
 /**
  *  Product Attribute Set Instance Editor
@@ -415,9 +416,7 @@ public class VPAttribute extends JComponent
 		}
 		else
 		{
-			VPAttributeDialog vad = new VPAttributeDialog (Env.getFrame (this), 
-				M_AttributeSetInstance_ID, M_Product_ID, m_C_BPartner_ID,
-				productWindow, m_AD_Column_ID, m_WindowNo);
+			IVPAttributeDialog vad = VPAttributeDialog.getDialog(Env.getFrame (this), M_AttributeSetInstance_ID, M_Product_ID, m_C_BPartner_ID, productWindow, m_AD_Column_ID, m_WindowNo);
 			if (vad.isChanged())
 			{
 				m_text.setText(vad.getM_AttributeSetInstanceName());

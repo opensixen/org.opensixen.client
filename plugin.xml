@@ -5,5 +5,6 @@
    <extension-point id="org.opensixen.osgi.interfaces.IMenuInfoComponent" name="IMenuInfoComponent" schema="schema/org.opensixen.osgi.interfaces.IMenuInfoComponent.exsd"/>
    <extension-point id="org.opensixen.osgi.interfaces.IHelperContentProvider" name="IHelperContentProvider" schema="schema/org.opensixen.osgi.interfaces.IHelperContentProvider.exsd"/>
    <extension-point id="org.opensixen.osgi.interfaces.IAccountViewer" name="IAccountViewer" schema="schema/org.opensixen.osgi.interfaces.IAccountViewer.exsd"/>
+   <extension-point id="org.opensixen.osgi.interfaces.IVPAttributeDialog" name="org.opensixen.osgi.interfaces.IVPAttributeDialog" schema="schema/org.opensixen.osgi.interfaces.IVPAttributeDialog.exsd"/>
 
 </plugin>

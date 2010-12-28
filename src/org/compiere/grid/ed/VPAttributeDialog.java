@@ -70,6 +70,8 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IVPAttributeDialog;
 
 /**
  *  Product Attribute Set Product/Instance Dialog Editor.
@@ -79,7 +81,7 @@ import org.compiere.util.Msg;
  *  @version $Id: VPAttributeDialog.java,v 1.4 2006/07/30 00:51:27 jjanke Exp $
  */
 public class VPAttributeDialog extends CDialog
-	implements ActionListener
+	implements ActionListener, IVPAttributeDialog
 {
 	/**
 	 * 
@@ -126,71 +128,88 @@ public class VPAttributeDialog extends CDialog
 	 * 	@param AD_Column_ID column
 	 * 	@param WindowNo window
 	 */
-	public VPAttributeDialog (Frame frame, int M_AttributeSetInstance_ID, 
+	protected VPAttributeDialog (Frame frame, int M_AttributeSetInstance_ID, 
 		int M_Product_ID, int C_BPartner_ID, 
 		boolean productWindow, int AD_Column_ID, int WindowNo)
 	{
 		super (frame, Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID") , true);
-		log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
-			+ ", M_Product_ID=" + M_Product_ID
-			+ ", C_BPartner_ID=" + C_BPartner_ID
-			+ ", ProductW=" + productWindow + ", Column=" + AD_Column_ID);
-		m_WindowNo = Env.createWindowNo (this);
-		m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
-		m_M_Product_ID = M_Product_ID;
-		m_C_BPartner_ID = C_BPartner_ID;
-		m_productWindow = productWindow;
-		m_AD_Column_ID = AD_Column_ID;
-		m_WindowNoParent = WindowNo;
-
-		//get columnName from ad_column
- 	 	m_columnName = DB.getSQLValueString(null, "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID = ?", m_AD_Column_ID);
- 	 	if (m_columnName == null || m_columnName.trim().length() == 0)
- 	 	{
- 	 		//fallback
- 	 		m_columnName = "M_AttributeSetInstance_ID";
- 	 	}
- 	 	
-		try
-		{
-			jbInit();
-		}
-		catch(Exception ex)
-		{
-			log.log(Level.SEVERE, "VPAttributeDialog" + ex);
-		}
-		//	Dynamic Init
-		if (!initAttributes ())
-		{
-			dispose();
-			return;
-		}
-		AEnv.showCenterWindow(frame, this);
+		init(frame, M_AttributeSetInstance_ID, M_Product_ID, C_BPartner_ID, productWindow, AD_Column_ID, WindowNo);
+		
 	}	//	VPAttributeDialog
 
+	public void init(Frame frame, int M_AttributeSetInstance_ID, 
+			int M_Product_ID, int C_BPartner_ID, 
+			boolean productWindow, int AD_Column_ID, int WindowNo)	{
+		
+		log.config("M_AttributeSetInstance_ID=" + M_AttributeSetInstance_ID 
+				+ ", M_Product_ID=" + M_Product_ID
+				+ ", C_BPartner_ID=" + C_BPartner_ID
+				+ ", ProductW=" + productWindow + ", Column=" + AD_Column_ID);
+			m_WindowNo = Env.createWindowNo (this);
+			m_M_AttributeSetInstance_ID = M_AttributeSetInstance_ID;
+			m_M_Product_ID = M_Product_ID;
+			m_C_BPartner_ID = C_BPartner_ID;
+			m_productWindow = productWindow;
+			m_AD_Column_ID = AD_Column_ID;
+			m_WindowNoParent = WindowNo;
+
+			//get columnName from ad_column
+	 	 	m_columnName = DB.getSQLValueString(null, "SELECT ColumnName FROM AD_Column WHERE AD_Column_ID = ?", m_AD_Column_ID);
+	 	 	if (m_columnName == null || m_columnName.trim().length() == 0)
+	 	 	{
+	 	 		//fallback
+	 	 		m_columnName = "M_AttributeSetInstance_ID";
+	 	 	}
+	 	 	
+			try
+			{
+				jbInit();
+			}
+			catch(Exception ex)
+			{
+				log.log(Level.SEVERE, "VPAttributeDialog" + ex);
+			}
+			//	Dynamic Init
+			if (!initAttributes ())
+			{
+				dispose();
+				return;
+			}
+			
+
+			//	Window usually to wide (??)
+			Dimension dd = centerPanel.getPreferredSize();
+			dd.width = Math.min(500, dd.width);
+			centerPanel.setPreferredSize(dd);
+			AEnv.showCenterWindow(frame, this);
+
+		
+	}
+	
+	
 	private int						m_WindowNo;
-	private MAttributeSetInstance	m_masi;
+	protected MAttributeSetInstance	m_masi;
 	private int 					m_M_AttributeSetInstance_ID;
 	private int 					m_M_Locator_ID;
 	private String					m_M_AttributeSetInstanceName;
 	private int 					m_M_Product_ID;
 	private int						m_C_BPartner_ID;
 	private int						m_AD_Column_ID;
-	private int						m_WindowNoParent;
+	protected int						m_WindowNoParent;
 	/**	Enter Product Attributes		*/
-	private boolean					m_productWindow = false;
+	protected boolean					m_productWindow = false;
 	/**	Change							*/
 	private boolean					m_changed = false;
 	
 	private CLogger					log = CLogger.getCLogger(getClass());
 	/** Row Counter					*/
-	private int						m_row = 0;
+	protected int						m_row = 0;
 	/** List of Editors				*/
 	private ArrayList<CEditor>		m_editors = new ArrayList<CEditor>();
 	/** Length of Instance value (40)	*/
 	private static final int		INSTANCE_VALUE_LENGTH = 40;
 
-	private CCheckBox	cbNewEdit = new CCheckBox();
+	protected CCheckBox	cbNewEdit = new CCheckBox();
 	private CButton		bSelect = new CButton(Env.getImageIcon("PAttribute16.gif")); 
 	//	Lot
 	private VString fieldLotString = new VString ("Lot", false, false, true, 20, 20, null, null);
@@ -208,7 +227,7 @@ public class VPAttributeDialog extends CDialog
 	private CTextField fieldDescription = new CTextField (20);
 	//
 	private BorderLayout mainLayout = new BorderLayout();
-	private CPanel centerPanel = new CPanel();
+	protected CPanel centerPanel = new CPanel();
 	private ALayout centerLayout = new ALayout(5,5, true);
 	private ConfirmPanel confirmPanel = new ConfirmPanel (true);
 	
@@ -232,7 +251,7 @@ public class VPAttributeDialog extends CDialog
 	 *	Dyanmic Init.
 	 *  @return true if initialized
 	 */
-	private boolean initAttributes ()
+	protected boolean initAttributes ()
 	{
 		if (m_M_Product_ID == 0 && !m_productWindow)
 			return false;
@@ -409,9 +428,9 @@ public class VPAttributeDialog extends CDialog
 		centerPanel.add(fieldDescription, null);
 
 		//	Window usually to wide (??)
-		Dimension dd = centerPanel.getPreferredSize();
-		dd.width = Math.min(500, dd.width);
-		centerPanel.setPreferredSize(dd);
+		//Dimension dd = centerPanel.getPreferredSize();
+		//dd.width = Math.min(500, dd.width);
+		//centerPanel.setPreferredSize(dd);
 		return true;
 	}	//	initAttribute
 
@@ -492,9 +511,10 @@ public class VPAttributeDialog extends CDialog
 		}
 	}	//	addAttributeLine
 
-	/**
-	 *	dispose
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#dispose()
 	 */
+	@Override
 	public void dispose()
 	{
 		removeAll();
@@ -508,10 +528,10 @@ public class VPAttributeDialog extends CDialog
 		super.dispose();
 	}	//	dispose
 
-	/**
-	 *	ActionListener
-	 *  @param e event
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		//	Select Instance
@@ -702,7 +722,7 @@ public class VPAttributeDialog extends CDialog
 	 *	Save Selection
 	 *	@return true if saved
 	 */
-	private boolean saveSelection()
+	protected boolean saveSelection()
 	{
 		log.info("");
 		MAttributeSet as = m_masi.getMAttributeSet();
@@ -800,40 +820,71 @@ public class VPAttributeDialog extends CDialog
 	}	//	saveSelection
 
 	
-	/**************************************************************************
-	 * 	Get Instance ID
-	 * 	@return Instance ID
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#getM_AttributeSetInstance_ID()
 	 */
+	@Override
 	public int getM_AttributeSetInstance_ID()
 	{
 		return m_M_AttributeSetInstance_ID;
 	}	//	getM_AttributeSetInstance_ID
 
-	/**
-	 * 	Get Instance Name
-	 * 	@return Instance Name
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#getM_AttributeSetInstanceName()
 	 */
+	@Override
 	public String getM_AttributeSetInstanceName()
 	{
 		return m_M_AttributeSetInstanceName;
 	}	//	getM_AttributeSetInstanceName
 	
-	/**
-	 * Get Locator ID
-	 * @return M_Locator_ID
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#getM_Locator_ID()
 	 */
+	@Override
 	public int getM_Locator_ID()
 	{
 		return m_M_Locator_ID; 
 	}
 
-	/**
-	 * 	Value Changed
-	 *	@return true if changed
+	/* (non-Javadoc)
+	 * @see org.compiere.grid.ed.IVPAttributeDialog#isChanged()
 	 */
+	@Override
 	public boolean isChanged()
 	{
 		return m_changed;
 	}	//	isChanged
-
+	
+	
+	/**
+	 * OSGi contructor
+	 */
+	protected VPAttributeDialog()	{
+		super ((Frame)null, Msg.translate(Env.getCtx(), "M_AttributeSetInstance_ID") , true);
+	}
+	
+	/**
+	 * Get VPAttribuetDialog from OSGi or return a instance
+	 * @param frame
+	 * @param M_AttributeSetInstance_ID
+	 * @param M_Product_ID
+	 * @param C_BPartner_ID
+	 * @param productWindow
+	 * @param AD_Column_ID
+	 * @param WindowNo
+	 * @return
+	 */
+	public static IVPAttributeDialog getDialog(Frame frame, int M_AttributeSetInstance_ID,	int M_Product_ID, int C_BPartner_ID, boolean productWindow, int AD_Column_ID, int WindowNo)	{		
+		IVPAttributeDialog dialog = Service.locate(IVPAttributeDialog.class);
+		
+		if (dialog != null)	{
+			dialog.init(frame, M_AttributeSetInstance_ID, M_Product_ID, C_BPartner_ID, productWindow, AD_Column_ID, WindowNo);
+			return dialog;
+		}
+		
+		VPAttributeDialog self = new VPAttributeDialog(frame, M_AttributeSetInstance_ID, M_Product_ID, C_BPartner_ID, productWindow, AD_Column_ID, WindowNo);
+	
+		return self;
+	}
 } //	VPAttributeDialog
