@@ -64,6 +64,7 @@ import java.awt.Frame;
 
 import javax.swing.JToolBar;
 
+import org.compiere.model.DataStatusListener;
 import org.compiere.model.GridTab;
 
 /**
@@ -72,7 +73,7 @@ import org.compiere.model.GridTab;
  * @author Eloy Gomez
  * Indeos Consultoria http://www.indeos.es
  */
-public interface IAppsAction extends IService {
+public interface IAppsAction extends IService, DataStatusListener {
 
 	public void addAppsAction(JToolBar toolBar, GridTab gridTab, Frame frame);
 	

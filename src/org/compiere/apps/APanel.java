@@ -912,6 +912,7 @@ public class APanel extends CPanel
 		List<IAppsAction> osgiAppsActions = Service.list(IAppsAction.class);
 		for (IAppsAction action:osgiAppsActions)	{
 			action.addAppsAction(toolBar,m_curTab, Env.getFrame(this));
+			m_curGC.addDataStatusListener(action);
 		}
 		
 		
