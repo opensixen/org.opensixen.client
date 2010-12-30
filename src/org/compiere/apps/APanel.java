@@ -105,6 +105,7 @@ import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.opensixen.osgi.Service;
 import org.opensixen.osgi.interfaces.IAccountViewer;
+import org.opensixen.osgi.interfaces.IAppsAction;
 import org.opensixen.osgi.interfaces.IMenuAction;
 import org.opensixen.osgi.interfaces.IService;
 
@@ -529,12 +530,6 @@ public class APanel extends CPanel
 			toolBar.addSeparator();
 			toolBar.add(aEnd.getButton());
 		}
-
-		// Create OSGi menu actions..
-		List<IMenuAction> osgiActions = Service.list(IMenuAction.class);
-		for (IMenuAction action:osgiActions)	{
-			action.addAction(menuBar);
-		}
 		
 		//
 		if (CLogMgt.isLevelAll())
@@ -907,6 +902,19 @@ public class APanel extends CPanel
 			return true;
 		}
 
+		// Create OSGi menu actions..
+		List<IMenuAction> osgiActions = Service.list(IMenuAction.class);
+		for (IMenuAction action:osgiActions)	{
+			action.addAction(menuBar);
+		}
+		
+		// Create OSGi AppsAction
+		List<IAppsAction> osgiAppsActions = Service.list(IAppsAction.class);
+		for (IAppsAction action:osgiAppsActions)	{
+			action.addAppsAction(toolBar,m_curTab, Env.getFrame(this));
+		}
+		
+		
 		Dimension size = getPreferredSize();
 		log.info( "fini - " + size);
 		m_curWinTab.requestFocusInWindow();
