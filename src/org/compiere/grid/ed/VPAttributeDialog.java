@@ -667,7 +667,7 @@ public class VPAttributeDialog extends CDialog
 	/**
 	 * 	Instance New/Edit
 	 */
-	private void cmd_newEdit()
+	protected void cmd_newEdit()
 	{
 		boolean rw = cbNewEdit.isSelected();
 		log.config("R/W=" + rw + " " + m_masi);
