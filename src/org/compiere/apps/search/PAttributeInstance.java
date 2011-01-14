@@ -17,6 +17,7 @@
 package org.compiere.apps.search;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.sql.PreparedStatement;
@@ -43,6 +44,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IPAttributeInstance;
 
 
 /**
@@ -52,13 +55,19 @@ import org.compiere.util.Msg;
  *  @version    $Id: PAttributeInstance.java,v 1.3 2006/07/30 00:51:27 jjanke Exp $
  */
 public class PAttributeInstance extends CDialog 
-	implements ListSelectionListener
+	implements ListSelectionListener, IPAttributeInstance
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3743466565716139916L;
 
+	public PAttributeInstance()	{
+		super();
+		setTitle(Msg.getMsg(Env.getCtx(), "PAttributeInstance"));
+		setModal(true);
+	}
+	
 	/**
 	 * 	Constructor
 	 * 	@param parent frame parent
@@ -85,7 +94,7 @@ public class PAttributeInstance extends CDialog
 	 * 	@param M_Product_ID product key name pair
 	 * 	@param C_BPartner_ID bp
 	 */
-	public PAttributeInstance(JDialog parent, String title,
+	protected PAttributeInstance(JDialog parent, String title,
 		int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
 	{
 		super (parent, Msg.getMsg(Env.getCtx(), "PAttributeInstance") + title, true);
@@ -100,7 +109,7 @@ public class PAttributeInstance extends CDialog
 	 *	@param M_Product_ID product
 	 *	@param C_BPartner_ID partner
 	 */
-	private void init (int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
+	public void init (int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)
 	{
 		log.info("M_Warehouse_ID=" + M_Warehouse_ID 
 			+ ", M_Locator_ID=" + M_Locator_ID
@@ -247,7 +256,7 @@ public class PAttributeInstance extends CDialog
 			}
 		}	//	BPartner != 0
 
-		m_sql = m_table.prepareTable (s_layout, s_sqlFrom, s_sqlWhereWithoutWarehouse, false, "asi")
+		m_sql = m_table.prepareTable (getLayoutInfo(), s_sqlFrom, s_sqlWhereWithoutWarehouse, false, "asi")
 				+ " ORDER BY asi.GuaranteeDate, s.QtyOnHand";	//	oldest, smallest first
 		//
 		m_table.setRowSelectionAllowed(true);
@@ -301,10 +310,10 @@ public class PAttributeInstance extends CDialog
 		enableButtons();
 	}
 
-	/**
-	 * 	Action Listener
-	 *	@param e event 
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	@Override
 	public void actionPerformed(ActionEvent e)
 	{
 		if (e.getActionCommand().equals(ConfirmPanel.A_OK))
@@ -321,10 +330,10 @@ public class PAttributeInstance extends CDialog
 		}
 	}
  
-	/**
-	 * 	Table selection changed
-	 *	@param e event
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#valueChanged(javax.swing.event.ListSelectionEvent)
 	 */
+	@Override
 	public void valueChanged (ListSelectionEvent e)
 	{
 		if (e.getValueIsAdjusting())
@@ -364,10 +373,10 @@ public class PAttributeInstance extends CDialog
 			+ "; M_Locator_ID=" + m_M_Locator_ID);
 	}
 
-	/**
-	 *  Mouse Clicked
-	 *  @param e event
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#mouseClicked(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseClicked(MouseEvent e)
 	{
 		//  Double click with selected row => exit
@@ -379,31 +388,53 @@ public class PAttributeInstance extends CDialog
 	}
 
 
-	/**
-	 * 	Get Attribute Set Instance
-	 *	@return M_AttributeSetInstance_ID or -1
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#getM_AttributeSetInstance_ID()
 	 */
+	@Override
 	public int getM_AttributeSetInstance_ID()
 	{
 		return m_M_AttributeSetInstance_ID;
 	}
 
-	/**
-	 * 	Get Instance Name
-	 * 	@return Instance Name
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#getM_AttributeSetInstanceName()
 	 */
+	@Override
 	public String getM_AttributeSetInstanceName()
 	{
 		return m_M_AttributeSetInstanceName;
 	}
 
-	/**
-	 * 	Get Locator
-	 *	@return M_Locator_ID or 0
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#getM_Locator_ID()
 	 */
+	@Override
 	public int getM_Locator_ID()
 	{
 		return m_M_Locator_ID;
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.compiere.apps.search.IPAttributeInstance#getLayoutInfo()
+	 */
+	@Override
+	public ColumnInfo[] getLayoutInfo()	{
+		return s_layout;
+	}
+	
 
+	public static IPAttributeInstance get(JDialog parent, String title,
+			int M_Warehouse_ID, int M_Locator_ID, int M_Product_ID, int C_BPartner_ID)	{
+		
+		IPAttributeInstance instance = Service.locate(IPAttributeInstance.class);
+		if (instance != null)	{
+			instance.init(M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
+			AEnv.showCenterWindow(parent, (Dialog) instance);
+			return instance;
+		}
+		
+		instance = new PAttributeInstance(parent, title, M_Warehouse_ID, M_Locator_ID, M_Product_ID, C_BPartner_ID);
+		return instance;
+	}
 }

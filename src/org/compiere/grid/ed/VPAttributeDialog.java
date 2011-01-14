@@ -71,6 +71,7 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.opensixen.osgi.Service;
+import org.opensixen.osgi.interfaces.IPAttributeInstance;
 import org.opensixen.osgi.interfaces.IVPAttributeDialog;
 
 /**
@@ -651,7 +652,7 @@ public class VPAttributeDialog extends CDialog
 			rs = null; pstmt = null;
 		}
 		//		
-		PAttributeInstance pai = new PAttributeInstance(this, title, 
+		IPAttributeInstance pai = PAttributeInstance.get(this, title, 
 			M_Warehouse_ID, M_Locator_ID, m_M_Product_ID, m_C_BPartner_ID);
 		if (pai.getM_AttributeSetInstance_ID() != -1)
 		{

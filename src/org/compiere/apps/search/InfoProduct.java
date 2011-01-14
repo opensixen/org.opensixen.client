@@ -66,6 +66,7 @@ import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
 import org.jdesktop.swingx.JXTaskPane;
+import org.opensixen.osgi.interfaces.IPAttributeInstance;
 
 
 /**
@@ -875,7 +876,7 @@ public class InfoProduct extends Info implements ActionListener, ChangeListener
 			if (productInteger == null || productInteger.intValue() == 0 || warehouse == null)
 				return;
 			String title = warehouse.getName() + " - " + productName;
-			PAttributeInstance pai = new PAttributeInstance (this, title, 
+			IPAttributeInstance pai = PAttributeInstance.get(this, title, 
 				warehouse.getKey(), 0, productInteger.intValue(), m_C_BPartner_ID);
 			m_M_AttributeSetInstance_ID = pai.getM_AttributeSetInstance_ID();
 			m_M_Locator_ID = pai.getM_Locator_ID();
