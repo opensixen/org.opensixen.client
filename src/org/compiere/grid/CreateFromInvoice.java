@@ -37,6 +37,8 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.opensixen.osgi.AbstractDocGenerateModelValidator;
+import org.opensixen.osgi.interfaces.IDocGenerateModelValidator;
 
 /**
  *  Create Invoice Transactions from PO Orders or Receipt
@@ -50,6 +52,10 @@ import org.compiere.util.Msg;
  */
 public class CreateFromInvoice extends CreateFrom
 {
+	
+	// OSGi validators
+	private IDocGenerateModelValidator[] docValidators = AbstractDocGenerateModelValidator.getDocGenerateModelValidator(getClass().getName());
+	
 	/**
 	 *  Protected Constructor
 	 *  @param mTab MTab
@@ -503,6 +509,10 @@ public class CreateFromInvoice extends CreateFrom
 						invoiceLine.setQtyInvoiced(QtyEntered);
 					else
 						invoiceLine.setQtyInvoiced(inoutLine.getMovementQty());
+					// OSGi
+					for (IDocGenerateModelValidator validator:docValidators)	{
+						invoiceLine = validator.afterCreateLine(inoutLine, invoiceLine);
+					}
 				}
 				else {
 					log.fine("No Receipt Line");
@@ -510,10 +520,15 @@ public class CreateFromInvoice extends CreateFrom
 					if (orderLine != null)
 					{
 						invoiceLine.setOrderLine(orderLine);	//	overwrites
-						if (orderLine.getQtyEntered().compareTo(orderLine.getQtyOrdered()) != 0)
+						if (orderLine.getQtyEntered().compareTo(orderLine.getQtyOrdered()) != 0)	{
 							invoiceLine.setQtyInvoiced(QtyEntered
 								.multiply(orderLine.getQtyOrdered())
 								.divide(orderLine.getQtyEntered(), 12, BigDecimal.ROUND_HALF_UP));
+						}
+						// OSGi
+						for (IDocGenerateModelValidator validator:docValidators)	{
+							invoiceLine = validator.afterCreateLine(orderLine, invoiceLine);
+						}
 					}
 					else
 					{

@@ -39,6 +39,8 @@ import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 import org.compiere.util.Msg;
+import org.opensixen.osgi.AbstractDocGenerateModelValidator;
+import org.opensixen.osgi.interfaces.IDocGenerateModelValidator;
 
 /**
  *  Create Invoice Transactions from PO Orders or Receipt
@@ -57,6 +59,8 @@ public class CreateFromShipment extends CreateFrom
 	/**  Loaded RMA             */
 	private MRMA            m_rma = null;
 	private int defaultLocator_ID=0;
+	// OSGi validators
+	private IDocGenerateModelValidator[] docValidators = AbstractDocGenerateModelValidator.getDocGenerateModelValidator(getClass().getName());
 
 	/**
 	 *  Protected Constructor
@@ -611,6 +615,10 @@ public class CreateFromShipment extends CreateFrom
 					iol.setAD_OrgTrx_ID(ol.getAD_OrgTrx_ID());
 					iol.setUser1_ID(ol.getUser1_ID());
 					iol.setUser2_ID(ol.getUser2_ID());
+					// OSGi
+					for (IDocGenerateModelValidator validator:docValidators)	{
+						iol = validator.afterCreateLine(ol, iol);
+					}
 				}
 				else if (il != null)
 				{
@@ -630,6 +638,10 @@ public class CreateFromShipment extends CreateFrom
 					iol.setAD_OrgTrx_ID(il.getAD_OrgTrx_ID());
 					iol.setUser1_ID(il.getUser1_ID());
 					iol.setUser2_ID(il.getUser2_ID());
+					// OSGi
+					for (IDocGenerateModelValidator validator:docValidators)	{
+						iol = validator.afterCreateLine(il, iol);
+					}
 				}
 				else if (M_RMALine_ID != 0)
 				{
@@ -693,6 +705,8 @@ public class CreateFromShipment extends CreateFrom
 				inout.setDropShip_Location_ID(p_order.getDropShip_Location_ID());
 				inout.setDropShip_User_ID(p_order.getDropShip_User_ID());
 			}
+			
+			
 		}
 		if (m_invoice != null && m_invoice.getC_Invoice_ID() != 0)
 		{
