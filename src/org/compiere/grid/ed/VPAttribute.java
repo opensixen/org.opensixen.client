@@ -178,34 +178,34 @@ public class VPAttribute extends JComponent
 	}	//	VPAttribute
 
 	/**	Data Value				*/
-	private Object				m_value = new Object();
+	protected Object				m_value = new Object();
 	/** The Attribute Instance	*/
 	private MPAttributeLookup	m_mPAttribute;
 
 	/** The Text Field          */
-	private JTextField			m_text = new JTextField (VLookup.DISPLAY_LENGTH);
+	protected JTextField			m_text = new JTextField (VLookup.DISPLAY_LENGTH);
 	/** The Button              */
-	private CButton				m_button = new CButton();
+	protected CButton				m_button = new CButton();
 
 	JPopupMenu          		popupMenu = new JPopupMenu();
 	private CMenuItem 			menuEditor;
 
 	private boolean				m_readWrite;
 	private boolean				m_mandatory;
-	private int					m_WindowNo;
-	private int					m_C_BPartner_ID;
+	protected int					m_WindowNo;
+	protected int					m_C_BPartner_ID;
 	/** The Grid Tab * */
-	private GridTab m_GridTab; // added for processCallout
+	protected GridTab m_GridTab; // added for processCallout
 	/** The Grid Field * */
-	private GridField m_GridField; // added for processCallout
+	protected GridField m_GridField; // added for processCallout
 	
 	/**	Calling Window Info				*/
-	private int					m_AD_Column_ID = 0;
-	private GridField m_mField;
+	protected int					m_AD_Column_ID = 0;
+	protected GridField m_mField;
 	/**	No Instance Key					*/
 	private static Integer		NO_INSTANCE = new Integer(0);
 	/**	Logger			*/
-	private static CLogger log = CLogger.getCLogger(VPAttribute.class);
+	protected static CLogger log = CLogger.getCLogger(VPAttribute.class);
 		
 
 	/**
