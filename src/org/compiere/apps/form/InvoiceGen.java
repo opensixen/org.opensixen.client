@@ -96,7 +96,9 @@ public class InvoiceGen extends GenForm
 	            + " AND ic.C_DocType_ID=dt.C_DocType_ID"
 	            + " AND ic.AD_Client_ID=?"
 	            + " AND NOT EXISTS (SELECT * FROM C_Invoice i"
-	            + " WHERE i.C_Order_ID=ic.C_Order_ID AND i.DocStatus IN ('IP', 'CO', 'CL')) ");
+	            // egomez: If we include CO and CL orders, we can't split orders in many invoices
+	            // + " WHERE i.C_Order_ID=ic.C_Order_ID AND i.DocStatus IN ('IP', 'CO', 'CL')) ");
+	            + " WHERE i.C_Order_ID=ic.C_Order_ID AND i.DocStatus IN ('IP')) ");
 
         if (m_AD_Org_ID != null)
             sql.append(" AND ic.AD_Org_ID=").append(m_AD_Org_ID);
