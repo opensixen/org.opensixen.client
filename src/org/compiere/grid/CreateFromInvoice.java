@@ -361,6 +361,12 @@ public class CreateFromInvoice extends CreateFrom
 		if (p_order != null)
 		{
 			invoice.setOrder(p_order);	//	overwrite header values
+			// OSGi Validators
+			IDocGenerateModelValidator[] docValidators = AbstractDocGenerateModelValidator.getDocGenerateModelValidator(getClass().getName());
+			for (IDocGenerateModelValidator validator:docValidators)	{
+				validator.afterCreate(p_order, invoice);
+			}
+			
 			invoice.saveEx();
 		}
 
