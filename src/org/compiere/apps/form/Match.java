@@ -158,7 +158,7 @@ public class Match
 		KeyNamePair lineMatched = (KeyNamePair)xMatchedTable.getValueAt(matchedRow, I_Line);
 		KeyNamePair Product = (KeyNamePair)xMatchedTable.getValueAt(matchedRow, I_Product);
 
-		double totalQty = m_xMatched.doubleValue();
+		BigDecimal totalQty = m_xMatched;
 
 		//  Matched To
 		for (int row = 0; row < xMatchedToTable.getRowCount(); row++)
@@ -174,13 +174,13 @@ public class Match
 				KeyNamePair lineMatchedTo = (KeyNamePair)xMatchedToTable.getValueAt(row, I_Line);
 
 				//	Qty
-				double qty = 0.0;
+				BigDecimal qty = Env.ZERO;
 				if (matchMode == MODE_NOTMATCHED)
-					qty = ((Double)xMatchedToTable.getValueAt(row, I_QTY)).doubleValue();	//  doc
-				qty -= ((Double)xMatchedToTable.getValueAt(row, I_MATCHED)).doubleValue();  //  matched
-				if (qty > totalQty)
+					qty = (BigDecimal)xMatchedToTable.getValueAt(row, I_QTY);	//  doc
+				qty = qty.subtract((BigDecimal)xMatchedToTable.getValueAt(row, I_MATCHED));  //  matched
+				if (qty.compareTo(totalQty) == 1)
 					qty = totalQty;
-				totalQty -= qty;
+				totalQty= totalQty.subtract(qty);
 
 				//  Invoice or PO
 				boolean invoice = true;
@@ -204,7 +204,7 @@ public class Match
 				//  Create it
 				String innerTrxName = Trx.createTrxName("Match");
 				Trx innerTrx = Trx.get(innerTrxName, true);
-				if (createMatchRecord(invoice, M_InOutLine_ID, Line_ID, new BigDecimal(qty), innerTrxName))
+				if (createMatchRecord(invoice, M_InOutLine_ID, Line_ID, qty, innerTrxName))
 					innerTrx.commit();
 				else
 					innerTrx.rollback();
@@ -246,7 +246,7 @@ public class Match
 			m_sql.append(" AND lin.M_Product_ID=").append(Product.getKey());
 
 		//  calculate qty
-		double docQty = ((Double)xMatchedTable.getValueAt(row, I_QTY)).doubleValue();
+		BigDecimal docQty = (BigDecimal) xMatchedTable.getValueAt(row, I_QTY);
 		if (sameQty)
 			m_sql.append(" AND ").append(m_qtyColumn).append("=").append(docQty);
 		//  ** Load Table **
